@@ -2,7 +2,7 @@ package inifile
 
 import (
 	"errors"
-	"rest-go-sdk/logger"
+	"github.com/lantaris/rest-go-sdk/logger"
 	"gopkg.in/ini.v1"
 	"os"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"rest-go-sdk/logger"
+	"github.com/lantaris/rest-go-sdk/logger"
 )
 
 type RestServer struct {

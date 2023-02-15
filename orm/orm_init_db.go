@@ -1,7 +1,7 @@
 package orm
 
 import (
-	"rest-go-sdk/logger"
+	"github.com/lantaris/rest-go-sdk/logger"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
