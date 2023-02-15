@@ -1,7 +1,7 @@
 package orm
 
 import (
-	"github.com/lantaris/rest-go-sdk/logger"
+	"github.com/lantaris/rest-go-sdk/fmtlog"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -45,7 +45,7 @@ func Connect(Host string, Database string, Username string, Password string) err
 	dsn = fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", db_username, db_password, db_host, db_database)
 	DB.ORM, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		logger.Errorln("Error connect to database")
+		fmtlog.Errorln("Error connect to database")
 	}
 	return err
 }
@@ -57,7 +57,7 @@ func Migrate(dst ...interface{}) error {
 	)
 	err = DB.ORM.AutoMigrate(dst...)
 	if err != nil {
-		logger.Errorln("Error database migrate", err.Error())
+		fmtlog.Errorln("Error database migrate", err.Error())
 
 	}
 

@@ -1,4 +1,4 @@
-package logger
+package fmtlog
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	tlog *logrus.Logger
+	fmtlog *logrus.Logger
 
 	LevelList = map[string]logrus.Level{
 		"PANIC": logrus.PanicLevel,
@@ -43,8 +43,8 @@ func LogToStdout() io.Writer {
 
 // ***********************************************************************
 func LogLevel(DebugLevel string) {
-	tlog.SetLevel(str2lvl(DebugLevel))
-	tlog.Infoln("Logging level: " + DebugLevel)
+	fmtlog.SetLevel(str2lvl(DebugLevel))
+	fmtlog.Infoln("Logging level: " + DebugLevel)
 }
 
 // ***********************************************************************
@@ -54,26 +54,26 @@ func InitLogger(DebugLevel string, FileName string) {
 		err       error
 	)
 
-	tlog = logrus.New()
+	fmtlog = logrus.New()
 	if strings.ToLower(FileName) == "stdout" {
-		tlog.SetOutput(os.Stdout)
+		fmtlog.SetOutput(os.Stdout)
 	} else {
 		err, LogStream = LogToFile(FileName)
 		if err == nil {
-			tlog.SetOutput(LogStream)
+			fmtlog.SetOutput(LogStream)
 		} else {
-			tlog.SetOutput(os.Stdout)
+			fmtlog.SetOutput(os.Stdout)
 		}
 	}
 
-	tlog.SetFormatter(&logrus.TextFormatter{
+	fmtlog.SetFormatter(&logrus.TextFormatter{
 		DisableColors:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
 		FullTimestamp:   true,
 	})
 
 	LogLevel(DebugLevel)
-	tlog.Infoln("Logging initialized")
+	fmtlog.Infoln("Logging initialized")
 }
 
 // ***********************************************************************
@@ -90,91 +90,91 @@ func str2lvl(StrLvl string) logrus.Level {
 // ***********************************************************************
 
 func Tracef(format string, args ...interface{}) {
-	tlog.Logf(logrus.TraceLevel, format, args...)
+	fmtlog.Logf(logrus.TraceLevel, format, args...)
 }
 
 func Debugf(format string, args ...interface{}) {
-	tlog.Logf(logrus.DebugLevel, format, args...)
+	fmtlog.Logf(logrus.DebugLevel, format, args...)
 }
 
 func Infof(format string, args ...interface{}) {
-	tlog.Logf(logrus.InfoLevel, format, args...)
+	fmtlog.Logf(logrus.InfoLevel, format, args...)
 }
 
 func Warnf(format string, args ...interface{}) {
-	tlog.Logf(logrus.WarnLevel, format, args...)
+	fmtlog.Logf(logrus.WarnLevel, format, args...)
 }
 
 func Warningf(format string, args ...interface{}) {
-	tlog.Warnf(format, args...)
+	fmtlog.Warnf(format, args...)
 }
 
 func Errorf(format string, args ...interface{}) {
-	tlog.Logf(logrus.ErrorLevel, format, args...)
+	fmtlog.Logf(logrus.ErrorLevel, format, args...)
 }
 
 func Fatalf(format string, args ...interface{}) {
-	tlog.Logf(logrus.FatalLevel, format, args...)
-	tlog.Exit(1)
+	fmtlog.Logf(logrus.FatalLevel, format, args...)
+	fmtlog.Exit(1)
 }
 
 func Panicf(format string, args ...interface{}) {
-	tlog.Logf(logrus.PanicLevel, format, args...)
+	fmtlog.Logf(logrus.PanicLevel, format, args...)
 }
 
 func Trace(args ...interface{}) {
-	tlog.Log(logrus.TraceLevel, args...)
+	fmtlog.Log(logrus.TraceLevel, args...)
 }
 
 func Debug(args ...interface{}) {
-	tlog.Log(logrus.DebugLevel, args...)
+	fmtlog.Log(logrus.DebugLevel, args...)
 }
 
 func Info(args ...interface{}) {
-	tlog.Log(logrus.InfoLevel, args...)
+	fmtlog.Log(logrus.InfoLevel, args...)
 }
 
 func Warn(args ...interface{}) {
-	tlog.Log(logrus.WarnLevel, args...)
+	fmtlog.Log(logrus.WarnLevel, args...)
 }
 
 func Error(args ...interface{}) {
-	tlog.Log(logrus.ErrorLevel, args...)
+	fmtlog.Log(logrus.ErrorLevel, args...)
 }
 
 func Fatal(args ...interface{}) {
-	tlog.Log(logrus.FatalLevel, args...)
-	tlog.Exit(1)
+	fmtlog.Log(logrus.FatalLevel, args...)
+	fmtlog.Exit(1)
 }
 
 func Panic(args ...interface{}) {
-	tlog.Log(logrus.PanicLevel, args...)
+	fmtlog.Log(logrus.PanicLevel, args...)
 }
 
 func Traceln(args ...interface{}) {
-	tlog.Logln(logrus.TraceLevel, args...)
+	fmtlog.Logln(logrus.TraceLevel, args...)
 }
 
 func Debugln(args ...interface{}) {
-	tlog.Logln(logrus.DebugLevel, args...)
+	fmtlog.Logln(logrus.DebugLevel, args...)
 }
 
 func Infoln(args ...interface{}) {
-	tlog.Logln(logrus.InfoLevel, args...)
+	fmtlog.Logln(logrus.InfoLevel, args...)
 }
 
 func Warnln(args ...interface{}) {
-	tlog.Logln(logrus.WarnLevel, args...)
+	fmtlog.Logln(logrus.WarnLevel, args...)
 }
 
 func Warningln(args ...interface{}) {
-	tlog.Warnln(args...)
+	fmtlog.Warnln(args...)
 }
 
 func Errorln(args ...interface{}) {
-	tlog.Logln(logrus.ErrorLevel, args...)
+	fmtlog.Logln(logrus.ErrorLevel, args...)
 }
 
 func Panicln(args ...interface{}) {
-	tlog.Logln(logrus.PanicLevel, args...)
+	fmtlog.Logln(logrus.PanicLevel, args...)
 }

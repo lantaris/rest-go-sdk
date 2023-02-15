@@ -2,7 +2,7 @@ package inifile
 
 import (
 	"errors"
-	"github.com/lantaris/rest-go-sdk/logger"
+	"github.com/lantaris/rest-go-sdk/fmtlog"
 	"gopkg.in/ini.v1"
 	"os"
 )
@@ -43,7 +43,7 @@ func createFile(FileName string) error {
 	)
 	file, err = os.Create(FileName)
 	if err != nil {
-		logger.Errorln(err)
+		fmtlog.Errorln(err)
 		return err
 	}
 	defer file.Close()
@@ -60,12 +60,12 @@ func fillIniFileData() error {
 		// Iterating parameters
 		for ParamInd := 0; ParamInd < len((*iniFileData)[SecInd].Params); ParamInd++ {
 			if !iniFile.Section((*iniFileData)[SecInd].Section).HasKey((*iniFileData)[SecInd].Params[ParamInd].Param) {
-				logger.Traceln("Create key (" + (*iniFileData)[SecInd].Section + ":" +
+				fmtlog.Traceln("Create key (" + (*iniFileData)[SecInd].Section + ":" +
 					(*iniFileData)[SecInd].Params[ParamInd].Param + ")")
 				_, err = iniFile.Section((*iniFileData)[SecInd].Section).NewKey((*iniFileData)[SecInd].Params[ParamInd].Param,
 					(*iniFileData)[SecInd].Params[ParamInd].Default)
 				if err != nil {
-					logger.Errorln("Error creating section key: " + err.Error())
+					fmtlog.Errorln("Error creating section key: " + err.Error())
 					return err
 				}
 			}
@@ -97,7 +97,7 @@ func checkDeprications() {
 		DataParams = getDataParams(IniSect)
 		for _, IniParam := range iniFile.Section(IniSect).KeyStrings() {
 			if !arrayHasKey(DataParams, IniParam) {
-				logger.Debugln("Ini file parameter: [" + IniSect + ":" + IniParam +
+				fmtlog.Debugln("Ini file parameter: [" + IniSect + ":" + IniParam +
 					"] syntax error or deprecated.")
 			}
 		}
@@ -116,17 +116,17 @@ func checkIniFileData() error {
 			if !iniFile.Section((*iniFileData)[SecInd].Section).HasKey((*iniFileData)[SecInd].Params[ParamInd].Param) {
 				if (*iniFileData)[SecInd].Params[ParamInd].Required {
 					if (*iniFileData)[SecInd].Params[ParamInd].Default == "" {
-						logger.Errorln("Parameter (" + (*iniFileData)[SecInd].Section + ":" +
+						fmtlog.Errorln("Parameter (" + (*iniFileData)[SecInd].Section + ":" +
 							(*iniFileData)[SecInd].Params[ParamInd].Param + ") not set")
 						return errors.New("INI param not found")
 					}
 				}
 
-				logger.Traceln("Create key (" + (*iniFileData)[SecInd].Params[ParamInd].Param + ")")
+				fmtlog.Traceln("Create key (" + (*iniFileData)[SecInd].Params[ParamInd].Param + ")")
 				_, err = iniFile.Section((*iniFileData)[SecInd].Section).NewKey((*iniFileData)[SecInd].Params[ParamInd].Param,
 					(*iniFileData)[SecInd].Params[ParamInd].Default)
 				if err != nil {
-					logger.Errorln("Error creating section key: " + err.Error())
+					fmtlog.Errorln("Error creating section key: " + err.Error())
 					return err
 				}
 			}
@@ -136,7 +136,7 @@ func checkIniFileData() error {
 
 	err = Save()
 	if err != nil {
-		logger.Errorln("Error save ini file" + err.Error())
+		fmtlog.Errorln("Error save ini file" + err.Error())
 		return err
 	}
 	return err
@@ -147,7 +147,7 @@ func Save() error {
 	var err error = nil
 	err = iniFile.SaveTo(iniFileName)
 	if err != nil {
-		logger.Errorln("Error saving data to ini file: " + err.Error())
+		fmtlog.Errorln("Error saving data to ini file: " + err.Error())
 		return err
 	}
 	return err
@@ -166,11 +166,11 @@ func Initialization(FileName string, IniData *[]TIniFileSection) error {
 
 	// Check file exist
 	if _, err = os.Stat(iniFileName); err != nil {
-		logger.Debugln("Ini file not exist. Creating default ini file: " + iniFileName)
+		fmtlog.Debugln("Ini file not exist. Creating default ini file: " + iniFileName)
 		err = createFile(iniFileName)
 		newfileFlag = true
 		if err != nil {
-			logger.Errorln("Error creating ini file." + err.Error())
+			fmtlog.Errorln("Error creating ini file." + err.Error())
 			return err
 		}
 	}
@@ -178,7 +178,7 @@ func Initialization(FileName string, IniData *[]TIniFileSection) error {
 	// Open ini file
 	iniFile, err = ini.Load(iniFileName)
 	if err != nil {
-		logger.Errorln("Error opening ini file (" + iniFileName + " ):" + err.Error())
+		.Errorln("Error opening ini file (" + iniFileName + " ):" + err.Error())
 		return err
 	}
 
@@ -220,10 +220,10 @@ func GetParam(Section string, Param string) *ini.Key {
 // ***********************************************************************
 func SetParam(Section string, Param string, Value string) error {
 	var err error = nil
-	logger.Errorln("Creating/change ini parameter [" + Section + ":" + Param + "]")
+	fmtlog.Errorln("Creating/change ini parameter [" + Section + ":" + Param + "]")
 	_, err = iniFile.Section(Section).NewKey(Param, Value)
 	if err != nil {
-		logger.Errorln("Error creating section key: " + err.Error())
+		fmtlog.Errorln("Error creating section key: " + err.Error())
 		return err
 	}
 	//err = Save()
