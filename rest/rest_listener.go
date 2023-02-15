@@ -16,7 +16,7 @@ type RestServer struct {
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
-		fmt.Println(r.RequestURI)
+		fmt.Println("ERROR REQUEST URI:" + r.RequestURI)
 		// Call the next handler, which can be another middleware in the chain, or the final handler.
 		next.ServeHTTP(w, r)
 	})
@@ -24,7 +24,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 // *******************************************************************************
 func notFound(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.RequestURI)
+	fmt.Println("ERROR REQUEST URI:" + r.RequestURI)
 	w.WriteHeader(http.StatusNotFound)
 }
 
