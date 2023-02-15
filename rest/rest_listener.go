@@ -33,18 +33,18 @@ func (RS RestServer) Start() error {
 	var (
 		err error = nil
 	)
-	Logger.Debugln("Starting REST server: " + RS.RestServerConf.Name)
+	logger.Debugln("Starting REST server: " + RS.RestServerConf.Name)
 	RS.RestRouter = mux.NewRouter().StrictSlash(true)
 	for _, service := range RS.RestServerConf.Endpoints {
-		Logger.Debugln("REST add endpoint '" + service.Name + "':[" + service.Endpoint + ":" + service.Type + "]")
+		logger.Debugln("REST add endpoint '" + service.Name + "':[" + service.Endpoint + ":" + service.Type + "]")
 		RS.RestRouter.HandleFunc(service.Endpoint, service.Callback).Methods(service.Type).Name(service.Name)
 	}
 
-	Logger.Infoln("Starting rest server listen on:", RS.RestServerConf.Listen)
+	logger.Infoln("Starting rest server listen on:", RS.RestServerConf.Listen)
 	RS.RestRouter.NotFoundHandler = http.HandlerFunc(notFound)
 	err = http.ListenAndServe(RS.RestServerConf.Listen, RS.RestRouter)
 	if err != nil {
-		Logger.Errorln("Error starting REST server: [" + RS.RestServerConf.Name + "]:" + err.Error())
+		logger.Errorln("Error starting REST server: [" + RS.RestServerConf.Name + "]:" + err.Error())
 	}
 	return err
 }
