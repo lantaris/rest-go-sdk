@@ -178,7 +178,7 @@ func Initialization(FileName string, IniData *[]TIniFileSection) error {
 	// Open ini file
 	iniFile, err = ini.Load(iniFileName)
 	if err != nil {
-		.Errorln("Error opening ini file (" + iniFileName + " ):" + err.Error())
+		fmtlog.Errorln("Error opening ini file (" + iniFileName + " ):" + err.Error())
 		return err
 	}
 
