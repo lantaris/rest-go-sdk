@@ -6,7 +6,7 @@ import (
 )
 
 // ********************************************************
-func GetStructAttr(obj interface{}, fieldName string) interface{} {
+func (SELF *TORM) GetStructAttr(obj interface{}, fieldName string) interface{} {
 
 	r := reflect.ValueOf(obj)
 	f := reflect.Indirect(r).FieldByName(fieldName)
@@ -14,59 +14,57 @@ func GetStructAttr(obj interface{}, fieldName string) interface{} {
 }
 
 // ********************************************************
-func (ORM *TORM) Select(RetData interface{}, SelectFields map[string]interface{}) (err error) {
+func (SELF *TORM) Select(RetData interface{}, SelectFields map[string]interface{}) (err error) {
 	var (
 		result *gorm.DB
 	)
 
-	result = ORM.ORM.Where(SelectFields).Find(RetData)
+	result = SELF.ORM.Where(SelectFields).Find(RetData)
 	err = result.Error
 
 	return err
 }
 
 // ********************************************************
-func (ORM *TORM) Update(Data interface{}, SelectCriteria map[string]interface{}, UpdateFieldList []string) error {
+func (SELF *TORM) Update(Data interface{}, SelectCriteria map[string]interface{}, UpdateFieldList []string) (err error) {
 	var (
 		UpdateData map[string]interface{}
 		result     *gorm.DB
 	)
 
-	UpdateData = make(map[string]interface{})
-
-	for _, UpdField := range UpdateFieldList {
-		UpdateData[UpdField] = GetStructAttr(Data, UpdField)
+	if UpdateFieldList == nil {
+		result = SELF.ORM.Model(Data).Where(SelectCriteria).Updates(Data)
+	} else {
+		UpdateData = make(map[string]interface{})
+		for _, UpdField := range UpdateFieldList {
+			UpdateData[UpdField] = SELF.GetStructAttr(Data, UpdField)
+		}
+		result = SELF.ORM.Model(Data).Where(SelectCriteria).Updates(UpdateData)
 	}
+	err = result.Error
 
-	result = ORM.ORM.Model(Data).Where(SelectCriteria).Updates(UpdateData)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+	return err
 }
 
 // ********************************************************
-func (ORM *TORM) Insert(Data interface{}) error {
+func (SELF *TORM) Insert(Data interface{}) (err error) {
 	var (
 		result *gorm.DB
 	)
 
-	result = ORM.ORM.Create(Data)
-	if result.Error != nil {
-		return result.Error
-	}
+	result = SELF.ORM.Create(Data)
+	err = result.Error
 
-	return nil
+	return err
 }
 
 // ********************************************************
-func (ORM *TORM) Delete(StructName interface{}, SelectFields map[string]interface{}) (err error) {
+func (SELF *TORM) Delete(StructName interface{}, SelectFields map[string]interface{}) (err error) {
 	var (
 		result *gorm.DB
 	)
 
-	result = ORM.ORM.Where(SelectFields).Delete(StructName)
+	result = SELF.ORM.Where(SelectFields).Delete(StructName)
 	err = result.Error
 
 	return err

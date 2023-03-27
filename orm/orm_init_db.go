@@ -8,19 +8,13 @@ import (
 )
 
 // ***********************************************************************
-func Init(Host string, Database string, Username string, Password string) error {
+func (SELF *TORM) Init(Host string, Database string, Username string, Password string) error {
 	var (
 		err error = nil
 	)
 
 	// Connect to database
-	err = Connect(Host, Database, Username, Password)
-	if err != nil {
-		return err
-	}
-
-	// Migration if needded
-	err = Migrate()
+	err = SELF.Connect(Host, Database, Username, Password)
 	if err != nil {
 		return err
 	}
@@ -29,7 +23,7 @@ func Init(Host string, Database string, Username string, Password string) error 
 }
 
 // ***********************************************************************
-func Connect(Host string, Database string, Username string, Password string) error {
+func (SELF *TORM) Connect(Host string, Database string, Username string, Password string) error {
 	var (
 		err error = nil
 		db_host, db_username,
@@ -43,7 +37,7 @@ func Connect(Host string, Database string, Username string, Password string) err
 	db_password = Password
 
 	dsn = fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", db_username, db_password, db_host, db_database)
-	DB.ORM, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	SELF.ORM, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmtlog.Errorln("Error connect to database")
 	}
@@ -51,11 +45,11 @@ func Connect(Host string, Database string, Username string, Password string) err
 }
 
 // ***********************************************************************
-func Migrate(dst ...interface{}) error {
+func (SELF *TORM) Migrate(dst ...interface{}) error {
 	var (
 		err error = nil
 	)
-	err = DB.ORM.AutoMigrate(dst...)
+	err = SELF.ORM.AutoMigrate(dst...)
 	if err != nil {
 		fmtlog.Errorln("Error database migrate", err.Error())
 
