@@ -39,6 +39,7 @@ func (SELF *TORM) Connect(DBtype string, Host string, Database string, Username 
 	db_password = Password
 
 	if DBtype == "mysql" {
+		fmtlog.Infoln("Initialization MySQL database")
 		dsn = fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", db_username, db_password, db_host, db_database)
 		SELF.ORM, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
@@ -46,6 +47,7 @@ func (SELF *TORM) Connect(DBtype string, Host string, Database string, Username 
 			return err
 		}
 	} else if DBtype == "postgres" {
+		fmtlog.Infoln("Initialization PostgreSQL database")
 		dsn = fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable", db_username, db_password, db_host, db_database)
 		SELF.ORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
