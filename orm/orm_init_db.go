@@ -1,21 +1,26 @@
 package orm
 
 import (
-	"github.com/lantaris/rest-go-sdk/fmtlog"
 	"fmt"
+	"github.com/lantaris/rest-go-sdk/fmtlog"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+var (
+	MYSQL_DEF_PORT    = "3306"
+	POSTGRES_DEF_PORT = "5432"
+)
+
 // ***********************************************************************
-func (SELF *TORM) Init(DBtype string, Host string, Database string, Username string, Password string) error {
+func (SELF *TORM) Init(DBtype string, Host string, Port string, Database string, Username string, Password string) error {
 	var (
 		err error = nil
 	)
 
 	// Connect to database
-	err = SELF.Connect(DBtype, Host, Database, Username, Password)
+	err = SELF.Connect(DBtype, Host, Port, Database, Username, Password)
 	if err != nil {
 		return err
 	}
@@ -24,12 +29,13 @@ func (SELF *TORM) Init(DBtype string, Host string, Database string, Username str
 }
 
 // ***********************************************************************
-func (SELF *TORM) Connect(DBtype string, Host string, Database string, Username string, Password string) error {
+func (SELF *TORM) Connect(DBtype string, Host string, Port string, Database string, Username string, Password string) error {
 	var (
 		err error = nil
 		db_host, db_username,
 		db_password, db_database,
 		dsn string
+		DBPort string
 	)
 
 	// Get database configuration
@@ -40,7 +46,13 @@ func (SELF *TORM) Connect(DBtype string, Host string, Database string, Username 
 
 	if DBtype == "mysql" {
 		fmtlog.Infoln("Initialization MySQL database")
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", db_username, db_password, db_host, db_database)
+		if Port == "" {
+			DBPort = MYSQL_DEF_PORT
+		} else {
+			DBPort = Port
+		}
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			db_username, db_password, db_host, DBPort, db_database)
 		SELF.ORM, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
 			fmtlog.Errorln("Error connect to database")
@@ -48,7 +60,13 @@ func (SELF *TORM) Connect(DBtype string, Host string, Database string, Username 
 		}
 	} else if DBtype == "postgres" {
 		fmtlog.Infoln("Initialization PostgreSQL database")
-		dsn = fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable", db_username, db_password, db_host, db_database)
+		if Port == "" {
+			DBPort = POSTGRES_DEF_PORT
+		} else {
+			DBPort = Port
+		}
+		dsn = fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+			db_username, db_password, db_host, DBPort, db_database)
 		SELF.ORM, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			fmtlog.Errorln("Error connect to database")
